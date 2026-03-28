@@ -10,58 +10,60 @@
             --bg: #f6f2ec; --panel: #ffffff; --text: #231f1c; --muted: #6d655f;
             --border: #dfd4c8; --accent: #7b1f24; --ok: #1b7b4b; --gold: #936400;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
         .container { max-width: 500px; margin: 0 auto; }
         
-        /* Cabecera */
         .header { text-align: center; padding: 20px 0; position: relative; }
         .header h1 { font-family: 'Georgia', serif; color: var(--accent); margin: 0; text-transform: uppercase; letter-spacing: 2px; }
         .btn-logout { position: absolute; top: 10px; right: 0; background: none; border: 1px solid var(--border); padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; color: var(--muted); cursor: pointer; }
 
-        /* Tarjetas Estilo Maestranza */
         .card { background: var(--panel); border-radius: 12px; border-left: 5px solid var(--accent); padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: relative; }
         .card-date { color: var(--accent); font-weight: bold; font-size: 0.8rem; text-transform: uppercase; }
         .card-title { font-size: 1.15rem; font-family: 'Georgia', serif; font-weight: bold; margin: 4px 0; }
         .card-cartel { font-size: 0.9rem; color: var(--muted); line-height: 1.3; }
 
-        .libres-tag { float: right; font-weight: bold; font-size: 0.75rem; padding: 3px 8px; border-radius: 5px; }
+        /* Etiquetas con Tooltip */
+        .libres-tag { float: right; font-weight: bold; font-size: 0.75rem; padding: 3px 8px; border-radius: 5px; cursor: help; }
         .tag-green { background: #e8f6ee; color: var(--ok); }
         .tag-red { background: #fdecea; color: #b42318; }
 
-        /* Nombres y Gestión */
         .nombres-container { margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 10px; }
-        .persona-row { cursor: pointer; padding: 6px 0; display: block; border-radius: 4px; transition: background 0.2s; }
-        .persona-row:hover { background: #f9f9f9; }
         
-        .chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; background: #f0f0f0; margin: 2px; }
-        .chip.validado { background: #e8f6ee; color: var(--ok); border: 1px solid var(--ok); font-weight: 500; }
+        /* Estilo de los nombres clicables */
+        .persona-row { cursor: pointer; padding: 4px 0; border-radius: 4px; display: block; }
+        .persona-row:hover { background: #fffaf0; }
+        
+        .chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; background: #f0f0f0; margin: 2px; border: 1px solid transparent; }
+        .chip.validado { background: #e8f6ee; color: var(--ok); border-color: var(--ok); font-weight: bold; }
         .chip.pendiente { border: 1px dashed var(--gold); color: var(--gold); }
 
-        /* Menú de Gestión (Oculto por defecto) */
-        .gestion-panel { background: #fdfaf5; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; text-align: center; }
-        .btn-gestion { background: white; border: 1px solid var(--border); padding: 6px 12px; margin: 0 4px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        /* Panel de gestión */
+        .gestion-panel { background: #fdfaf5; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 8px; display: none; text-align: center; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .btn-gestion { background: white; border: 1px solid var(--border); padding: 8px 14px; margin: 4px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
         .btn-edit { color: var(--gold); }
         .btn-del { color: #b42318; }
         .btn-ok { background: var(--ok); color: white; border: none; }
 
-        /* Inputs de solicitud */
         .form-add { margin-top: 15px; background: #fcfcfc; border: 1px dashed var(--border); border-radius: 8px; padding: 10px; }
-        input { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        .btn-add { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        input { width: 100%; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .btn-add { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="login" style="text-align:center; padding-top:40px;">
-        <h1 style="color:var(--accent); font-family:Georgia, serif; margin-bottom:30px;">SEVILLA 2026</h1>
-        <div id="perfiles"></div>
+    <div id="login" style="text-align:center; padding-top:60px;">
+        <h1 style="color:var(--accent); font-family:Georgia, serif;">SEVILLA 2026</h1>
+        <p style="color:var(--muted)">Gestión Familiar de Entradas</p>
+        <div id="perfiles" style="margin-top:30px"></div>
     </div>
 
     <div id="app" style="display:none;">
         <div class="header">
             <h1 id="user-title"></h1>
-            <button class="btn-logout" onclick="location.reload()">Cambiar Perfil</button>
+            <button class="btn-logout" title="Haz clic para salir y cambiar de usuario" onclick="location.reload()">Cambiar Perfil</button>
         </div>
         <div id="lista-corridas">Cargando la Feria...</div>
     </div>
@@ -90,6 +92,7 @@
 
     async function render() {
         const { data: corridas } = await supabaseClient.from('gestor_toros').select('*').order('fecha');
+        if (!corridas) return;
         let html = "";
 
         corridas.forEach(c => {
@@ -99,25 +102,32 @@
 
             html += `
                 <div class="card">
-                    <span class="libres-tag ${libres > 0 ? 'tag-green' : 'tag-red'}">${libres} Libres</span>
+                    <span class="libres-tag ${libres > 0 ? 'tag-green' : 'tag-red'}" 
+                          title="Quedan ${libres} de los 4 abonos oficiales para este día.">
+                        ${libres} Libres
+                    </span>
                     <div class="card-date">${new Date(c.fecha).toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'})}</div>
                     <div class="card-title">${c.titulo}</div>
                     <div class="card-cartel">${c.cartel}</div>
                     
                     <div class="nombres-container">
                         ${peticiones.map(p => {
-                            const esMio = (p.usuario === miUsuario || miUsuario === 'Papa&Mamá');
+                            const esPropio = (p.usuario === miUsuario || miUsuario === 'Papa&Mamá');
+                            const helpText = esPropio ? "Haz clic para editar o borrar esta petición." : "Petición de " + p.usuario;
+                            const statusText = p.estado === 'OK' ? "Confirmada por Papa&Mamá" : "Pendiente de validación";
+
                             return `
-                                <div class="persona-row" onclick="toggleGestion('${p.id}')">
-                                    <strong style="font-size:0.8rem; color:var(--muted)">${p.usuario}:</strong>
-                                    ${p.nombres.map(n => `<span class="chip ${p.estado==='OK' ? 'validado' : 'pendiente'}">${n}</span>`).join('')}
+                                <div class="persona-row" onclick="toggleGestion('${p.id}')" title="${helpText}">
+                                    <strong style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">${p.usuario}:</strong>
+                                    ${p.nombres.map(n => `<span class="chip ${p.estado==='OK' ? 'validado' : 'pendiente'}" title="${statusText}">${n}</span>`).join('')}
                                     
-                                    ${esMio ? `
+                                    ${esPropio ? `
                                         <div id="gest-${p.id}" class="gestion-panel">
-                                            <button class="btn-gestion btn-edit" onclick="editar('${c.id}','${p.id}')">EDITAR</button>
-                                            <button class="btn-gestion btn-del" onclick="borrar('${c.id}','${p.id}')">BORRAR</button>
+                                            <p style="font-size:0.7rem; margin-top:0; color:var(--muted)">GESTIONAR PETICIÓN</p>
+                                            <button class="btn-gestion btn-edit" onclick="editar('${c.id}','${p.id}')">EDITAR NOMBRE</button>
+                                            <button class="btn-gestion btn-del" onclick="borrar('${c.id}','${p.id}')">BORRAR TODO</button>
                                             ${miUsuario === 'Papa&Mamá' && p.estado === 'PENDIENTE' ? 
-                                                `<button class="btn-gestion btn-ok" onclick="validar('${c.id}','${p.id}')">VALIDAR</button>` : ''}
+                                                `<button class="btn-gestion btn-ok" onclick="validar('${c.id}','${p.id}')">VALIDAR AHORA</button>` : ''}
                                         </div>
                                     ` : ''}
                                 </div>
@@ -127,8 +137,8 @@
 
                     ${libres > 0 ? `
                         <div class="form-add">
-                            <input type="text" id="in-${c.id}" placeholder="Escribe nombre(s) aquí...">
-                            <button class="btn-add" onclick="enviar('${c.id}')">Apuntar</button>
+                            <input type="text" id="in-${c.id}" placeholder="Escribe el nombre del invitado..." title="Escribe el nombre de la persona que quieres apuntar.">
+                            <button class="btn-add" onclick="enviar('${c.id}')">APUNTAR ESTA ENTRADA</button>
                         </div>
                     ` : ''}
                 </div>`;
@@ -151,8 +161,8 @@
     }
 
     async function borrar(cId, resId) {
-        event.stopPropagation(); // Evita cerrar el panel antes de tiempo
-        if(!confirm("¿Borrar esta petición?")) return;
+        event.stopPropagation();
+        if(!confirm("¿Deseas eliminar esta petición definitivamente?")) return;
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
         const nuevas = data.peticiones.filter(p => p.id !== resId);
         await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
@@ -163,7 +173,7 @@
         event.stopPropagation();
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
         const peticion = data.peticiones.find(p => p.id === resId);
-        const nuevo = prompt("Cambiar nombre:", peticion.nombres[0]);
+        const nuevo = prompt("Modificar nombre del invitado:", peticion.nombres[0]);
         if (!nuevo) return;
 
         const nuevas = data.peticiones.map(p => p.id === resId ? {...p, nombres: [nuevo]} : p);
