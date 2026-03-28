@@ -3,91 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sevilla 2026 · Gestión Familiar</title>
+    <title>Sevilla 2026 · Feria de Abril</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg: #f6f2ec; --panel: #ffffff; --text: #231f1c; --muted: #6d655f;
+            --bg: #fdfaf5; --panel: rgba(255, 255, 255, 0.9); --text: #231f1c; 
             --border: #dfd4c8; --accent: #7b1f24; --ok: #1b7b4b; --gold: #936400;
         }
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg); 
-            background-image: url('data:image/jpeg;base64,...(reemplazar con el cartel recortado en base64)...'); /* Se usaría una imagen recortada y desvaída */
-            background-repeat: repeat;
-            background-size: 300px;
-            color: var(--text); 
-            padding: 10px; 
-            margin: 0; 
-        }
-        .container { max-width: 500px; margin: 0 auto; }
         
-        .header { text-align: center; padding: 20px 0; position: relative; }
-        .header h1 { font-family: 'Georgia', serif; color: var(--accent); margin: 0; text-transform: uppercase; letter-spacing: 2px; }
-        .btn-logout { position: absolute; top: 10px; right: 0; background: rgba(255, 255, 255, 0.8); border: 1px solid var(--border); padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; color: var(--muted); cursor: pointer; }
+        body { 
+            font-family: 'Segoe UI', serif; 
+            background-color: var(--bg);
+            /* Imagen de fondo tipo marca de agua */
+            background-image: linear-gradient(rgba(253, 250, 245, 0.92), rgba(253, 250, 245, 0.92)), 
+                              url('https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png');
+            background-attachment: fixed;
+            background-size: cover;
+            color: var(--text); padding: 0; margin: 0; 
+        }
+
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+        
+        /* Decoración del Cartel en la cabecera */
+        .banner-cartel {
+            width: 100%;
+            height: 140px;
+            background-image: url('https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png');
+            background-position: center 20%; /* Enfoca la parte de arriba del cartel */
+            background-size: cover;
+            border-bottom: 3px solid var(--accent);
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        }
+
+        .header h1 { 
+            font-family: 'Georgia', serif; 
+            color: var(--accent); 
+            margin: 10px 0 0 0; 
+            text-transform: uppercase; 
+            letter-spacing: 3px;
+            text-shadow: 1px 1px 0px white;
+        }
 
         .card { 
             background: var(--panel); 
             border-radius: 12px; 
-            border-left: 5px solid var(--accent); 
+            border: 1px solid var(--border);
+            border-left: 6px solid var(--accent); 
             padding: 15px; 
-            margin-bottom: 15px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
-            position: relative; 
-            /* Toque decorativo del cartel en el borde */
-            background-image: url('data:image/jpeg;base64,...(reemplazar con el borde del cartel)...');
-            background-position: left center;
-            background-repeat: no-repeat;
-            background-size: 20px;
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            backdrop-filter: blur(5px);
         }
-        .card-date { color: var(--accent); font-weight: bold; font-size: 0.8rem; text-transform: uppercase; margin-left: 15px; }
-        .card-title { font-size: 1.15rem; font-family: 'Georgia', serif; font-weight: bold; margin: 4px 0 4px 15px; }
-        .card-cartel { font-size: 0.9rem; color: var(--muted); line-height: 1.3; margin-left: 15px; }
 
-        /* Etiquetas con Tooltip */
-        .libres-tag { float: right; font-weight: bold; font-size: 0.75rem; padding: 3px 8px; border-radius: 5px; cursor: help; }
-        .tag-green { background: #e8f6ee; color: var(--ok); }
-        .tag-red { background: #fdecea; color: #b42318; }
+        .card-date { color: var(--gold); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; }
+        .card-title { font-size: 1.2rem; font-family: 'Georgia', serif; font-weight: bold; margin: 5px 0; color: var(--accent); }
+        .card-cartel { font-size: 0.95rem; color: var(--muted); font-style: italic; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px; }
 
-        .nombres-container { margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 10px; margin-left: 15px; }
+        .libres-tag { float: right; font-weight: bold; font-size: 0.75rem; padding: 4px 10px; border-radius: 5px; border: 1px solid; }
+        .tag-green { background: #e8f6ee; color: var(--ok); border-color: var(--ok); }
+        .tag-red { background: #fdecea; color: #b42318; border-color: #b42318; }
+
+        /* Botones de gestión mejorados */
+        .persona-row { cursor: pointer; padding: 8px; border-radius: 8px; margin-bottom: 4px; transition: 0.3s; background: rgba(240, 240, 240, 0.4); }
+        .persona-row:hover { background: rgba(123, 31, 36, 0.05); }
         
-        /* Estilo de los nombres clicables */
-        .persona-row { cursor: pointer; padding: 4px 0; border-radius: 4px; display: block; }
-        .persona-row:hover { background: #fffaf0; }
-        
-        .chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; background: #f0f0f0; margin: 2px; border: 1px solid transparent; }
+        .chip { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.85rem; background: white; border: 1px solid #ccc; }
         .chip.validado { background: #e8f6ee; color: var(--ok); border-color: var(--ok); font-weight: bold; }
-        .chip.pendiente { border: 1px dashed var(--gold); color: var(--gold); }
 
-        /* Panel de gestión */
-        .gestion-panel { background: #fdfaf5; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 8px; display: none; text-align: center; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .btn-gestion { background: white; border: 1px solid var(--border); padding: 8px 14px; margin: 4px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
-        .btn-edit { color: var(--gold); }
-        .btn-del { color: #b42318; }
+        .gestion-panel { background: white; border: 1px solid var(--accent); border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
+        .btn-gestion { padding: 8px 12px; margin: 4px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; border: 1px solid #ccc; background: white; }
+        .btn-del { color: white; background: var(--accent); border: none; }
         .btn-ok { background: var(--ok); color: white; border: none; }
 
-        .form-add { margin-top: 15px; background: #fcfcfc; border: 1px dashed var(--border); border-radius: 8px; padding: 10px; margin-left: 15px; }
-        input { width: 100%; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        .btn-add { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .form-add { margin-top: 15px; text-align: center; }
+        input { width: 80%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; margin-bottom: 10px; }
+        .btn-add { background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 80%; }
+        
+        /* Pantalla Login */
+        .login-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--accent); }
     </style>
 </head>
 <body>
 
+<div id="deco-header" class="banner-cartel" style="display:none;"></div>
+
 <div class="container">
-    <div id="login" style="text-align:center; padding-top:60px;">
-        <h1 style="color:var(--accent); font-family:Georgia, serif;">SEVILLA 2026</h1>
-        <p style="color:var(--muted)">Gestión Familiar de Entradas</p>
-        <div id="perfiles" style="margin-top:30px"></div>
+    <div id="login" style="text-align:center; padding-top:40px;">
+        <div class="login-box">
+            <img src="https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png" style="width: 100px; border-radius: 10px; margin-bottom: 15px;">
+            <h1 style="color:var(--accent); font-family:Georgia, serif; margin:0;">SEVILLA 2026</h1>
+            <p>Selecciona tu perfil</p>
+            <div id="perfiles" style="margin-top:20px"></div>
+        </div>
     </div>
 
     <div id="app" style="display:none;">
         <div class="header">
             <h1 id="user-title"></h1>
-            <button class="btn-logout" title="Haz clic para salir y cambiar de usuario" onclick="location.reload()">Cambiar Perfil</button>
+            <button class="btn-logout" onclick="location.reload()">SALIR</button>
         </div>
-        <div id="lista-corridas">Cargando la Feria...</div>
+        <div id="lista-corridas"></div>
     </div>
 </div>
 
@@ -107,6 +123,7 @@
         miUsuario = u;
         document.getElementById('login').style.display = 'none';
         document.getElementById('app').style.display = 'block';
+        document.getElementById('deco-header').style.display = 'block';
         document.getElementById('user-title').innerText = u;
         render();
         setInterval(render, 15000);
@@ -114,9 +131,7 @@
 
     async function render() {
         const { data: corridas } = await supabaseClient.from('gestor_toros').select('*').order('fecha');
-        if (!corridas) return;
         let html = "";
-
         corridas.forEach(c => {
             const peticiones = c.peticiones || [];
             const countOK = peticiones.filter(p => p.estado === 'OK').reduce((acc, p) => acc + p.nombres.length, 0);
@@ -124,9 +139,8 @@
 
             html += `
                 <div class="card">
-                    <span class="libres-tag ${libres > 0 ? 'tag-green' : 'tag-red'}" 
-                          title="Quedan ${libres} de los 4 abonos oficiales para este día.">
-                        ${libres} Libres
+                    <span class="libres-tag ${libres > 0 ? 'tag-green' : 'tag-red'}" title="Quedan ${libres} sitios">
+                        ${libres} LIBRES
                     </span>
                     <div class="card-date">${new Date(c.fecha).toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'})}</div>
                     <div class="card-title">${c.titulo}</div>
@@ -134,22 +148,18 @@
                     
                     <div class="nombres-container">
                         ${peticiones.map(p => {
-                            const esPropio = (p.usuario === miUsuario || miUsuario === 'Papa&Mamá');
-                            const helpText = esPropio ? "Haz clic para editar o borrar esta petición." : "Petición de " + p.usuario;
-                            const statusText = p.estado === 'OK' ? "Confirmada por Papa&Mamá" : "Pendiente de validación";
-
+                            const esMio = (p.usuario === miUsuario || miUsuario === 'Papa&Mamá');
                             return `
-                                <div class="persona-row" onclick="toggleGestion('${p.id}')" title="${helpText}">
-                                    <strong style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">${p.usuario}:</strong>
-                                    ${p.nombres.map(n => `<span class="chip ${p.estado==='OK' ? 'validado' : 'pendiente'}" title="${statusText}">${n}</span>`).join('')}
+                                <div class="persona-row" onclick="toggleGestion('${p.id}')">
+                                    <strong style="font-size:0.75rem; color:var(--gold)">${p.usuario.toUpperCase()}:</strong>
+                                    ${p.nombres.map(n => `<span class="chip ${p.estado==='OK' ? 'validado' : ''}">${n}</span>`).join('')}
                                     
-                                    ${esPropio ? `
+                                    ${esMio ? `
                                         <div id="gest-${p.id}" class="gestion-panel">
-                                            <p style="font-size:0.7rem; margin-top:0; color:var(--muted)">GESTIONAR PETICIÓN</p>
-                                            <button class="btn-gestion btn-edit" onclick="editar('${c.id}','${p.id}')">EDITAR NOMBRE</button>
-                                            <button class="btn-gestion btn-del" onclick="borrar('${c.id}','${p.id}')">BORRAR TODO</button>
+                                            <button class="btn-gestion" onclick="editar('${c.id}','${p.id}')">✎ EDITAR</button>
+                                            <button class="btn-gestion btn-del" onclick="borrar('${c.id}','${p.id}')">✕ BORRAR</button>
                                             ${miUsuario === 'Papa&Mamá' && p.estado === 'PENDIENTE' ? 
-                                                `<button class="btn-gestion btn-ok" onclick="validar('${c.id}','${p.id}')">VALIDAR AHORA</button>` : ''}
+                                                `<button class="btn-gestion btn-ok" onclick="validar('${c.id}','${p.id}')">✓ VALIDAR</button>` : ''}
                                         </div>
                                     ` : ''}
                                 </div>
@@ -159,8 +169,8 @@
 
                     ${libres > 0 ? `
                         <div class="form-add">
-                            <input type="text" id="in-${c.id}" placeholder="Escribe el nombre del invitado..." title="Escribe el nombre de la persona que quieres apuntar.">
-                            <button class="btn-add" onclick="enviar('${c.id}')">APUNTAR ESTA ENTRADA</button>
+                            <input type="text" id="in-${c.id}" placeholder="Nombre del invitado...">
+                            <button class="btn-add" onclick="enviar('${c.id}')">APUNTAR</button>
                         </div>
                     ` : ''}
                 </div>`;
@@ -184,7 +194,7 @@
 
     async function borrar(cId, resId) {
         event.stopPropagation();
-        if(!confirm("¿Deseas eliminar esta petición definitivamente?")) return;
+        if(!confirm("¿Borrar?")) return;
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
         const nuevas = data.peticiones.filter(p => p.id !== resId);
         await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
@@ -195,9 +205,8 @@
         event.stopPropagation();
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
         const peticion = data.peticiones.find(p => p.id === resId);
-        const nuevo = prompt("Modificar nombre del invitado:", peticion.nombres[0]);
+        const nuevo = prompt("Nuevo nombre:", peticion.nombres[0]);
         if (!nuevo) return;
-
         const nuevas = data.peticiones.map(p => p.id === resId ? {...p, nombres: [nuevo]} : p);
         await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
         render();
