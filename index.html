@@ -1,224 +1,809 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sevilla 2026 · Feria de Abril</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <style>
-        :root {
-            --bg: #fdfaf5; --panel: rgba(255, 255, 255, 0.9); --text: #231f1c; 
-            --border: #dfd4c8; --accent: #7b1f24; --ok: #1b7b4b; --gold: #936400;
-        }
-        
-        body { 
-            font-family: 'Segoe UI', serif; 
-            background-color: var(--bg);
-            /* Imagen de fondo tipo marca de agua */
-            background-image: linear-gradient(rgba(253, 250, 245, 0.92), rgba(253, 250, 245, 0.92)), 
-                              url('https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png');
-            background-attachment: fixed;
-            background-size: cover;
-            color: var(--text); padding: 0; margin: 0; 
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sevilla 2026 · Feria de Abril</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #f7f1e8;
+      --bg-soft: rgba(255, 250, 244, 0.84);
+      --panel: rgba(255, 255, 255, 0.88);
+      --panel-strong: rgba(255, 255, 255, 0.96);
+      --text: #2d241f;
+      --muted: #7b6d63;
+      --border: #ddcfc1;
+      --border-soft: rgba(123, 31, 36, 0.12);
+      --accent: #7b1f24;
+      --accent-2: #a84a4f;
+      --accent-soft: rgba(123, 31, 36, 0.08);
+      --ok: #1f7a4f;
+      --ok-soft: #e7f4ec;
+      --danger: #b42318;
+      --danger-soft: #fdecea;
+      --gold: #8b6a1d;
+      --shadow: 0 10px 30px rgba(54, 36, 24, 0.08);
+      --shadow-soft: 0 6px 18px rgba(54, 36, 24, 0.06);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
 
-        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
-        
-        /* Decoración del Cartel en la cabecera */
-        .banner-cartel {
-            width: 100%;
-            height: 140px;
-            background-image: url('https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png');
-            background-position: center 20%; /* Enfoca la parte de arriba del cartel */
-            background-size: cover;
-            border-bottom: 3px solid var(--accent);
-            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .header h1 { 
-            font-family: 'Georgia', serif; 
-            color: var(--accent); 
-            margin: 10px 0 0 0; 
-            text-transform: uppercase; 
-            letter-spacing: 3px;
-            text-shadow: 1px 1px 0px white;
-        }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(247, 241, 232, 0.93), rgba(247, 241, 232, 0.95)),
+        url("https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png") center/cover fixed;
+      min-height: 100vh;
+    }
 
-        .card { 
-            background: var(--panel); 
-            border-radius: 12px; 
-            border: 1px solid var(--border);
-            border-left: 6px solid var(--accent); 
-            padding: 15px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            backdrop-filter: blur(5px);
-        }
+    .banner-cartel {
+      width: 100%;
+      height: 180px;
+      background-image:
+        linear-gradient(to bottom, rgba(25, 16, 12, 0.18), rgba(247, 241, 232, 0.08)),
+        url("https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png");
+      background-size: cover;
+      background-position: center 18%;
+      border-bottom: 1px solid rgba(123, 31, 36, 0.25);
+      -webkit-mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
+    }
 
-        .card-date { color: var(--gold); font-weight: bold; font-size: 0.85rem; text-transform: uppercase; }
-        .card-title { font-size: 1.2rem; font-family: 'Georgia', serif; font-weight: bold; margin: 5px 0; color: var(--accent); }
-        .card-cartel { font-size: 0.95rem; color: var(--muted); font-style: italic; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 10px; }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
 
-        .libres-tag { float: right; font-weight: bold; font-size: 0.75rem; padding: 4px 10px; border-radius: 5px; border: 1px solid; }
-        .tag-green { background: #e8f6ee; color: var(--ok); border-color: var(--ok); }
-        .tag-red { background: #fdecea; color: #b42318; border-color: #b42318; }
+    .login-wrap {
+      min-height: calc(100vh - 40px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
 
-        /* Botones de gestión mejorados */
-        .persona-row { cursor: pointer; padding: 8px; border-radius: 8px; margin-bottom: 4px; transition: 0.3s; background: rgba(240, 240, 240, 0.4); }
-        .persona-row:hover { background: rgba(123, 31, 36, 0.05); }
-        
-        .chip { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.85rem; background: white; border: 1px solid #ccc; }
-        .chip.validado { background: #e8f6ee; color: var(--ok); border-color: var(--ok); font-weight: bold; }
+    .login-box {
+      width: 100%;
+      max-width: 460px;
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 34px 26px 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .gestion-panel { background: white; border: 1px solid var(--accent); border-radius: 8px; padding: 12px; margin-top: 10px; display: none; }
-        .btn-gestion { padding: 8px 12px; margin: 4px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; border: 1px solid #ccc; background: white; }
-        .btn-del { color: white; background: var(--accent); border: none; }
-        .btn-ok { background: var(--ok); color: white; border: none; }
+    .login-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(123, 31, 36, 0.06), transparent 36%),
+        linear-gradient(315deg, rgba(147, 100, 0, 0.05), transparent 30%);
+      pointer-events: none;
+    }
 
-        .form-add { margin-top: 15px; text-align: center; }
-        input { width: 80%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; margin-bottom: 10px; }
-        .btn-add { background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 80%; }
-        
-        /* Pantalla Login */
-        .login-box { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--accent); }
-    </style>
+    .login-box > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-image {
+      width: 96px;
+      height: 96px;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+      margin: 0 auto 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      border: 3px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .login-title,
+    .header-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .login-title {
+      font-size: 2rem;
+      line-height: 1.1;
+    }
+
+    .login-subtitle {
+      margin: 10px auto 0;
+      color: var(--muted);
+      max-width: 280px;
+      line-height: 1.45;
+      font-size: 0.98rem;
+    }
+
+    .profile-list {
+      margin-top: 24px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .profile-btn,
+    .btn-add,
+    .btn-gestion,
+    .btn-logout {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      transition: 0.22s ease;
+      font: inherit;
+    }
+
+    .profile-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: white;
+      color: var(--accent);
+      border: 1px solid rgba(123, 31, 36, 0.18);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      box-shadow: 0 2px 8px rgba(76, 48, 33, 0.04);
+    }
+
+    .profile-btn:hover {
+      transform: translateY(-1px);
+      background: #fff8f8;
+      border-color: rgba(123, 31, 36, 0.34);
+      box-shadow: 0 8px 18px rgba(76, 48, 33, 0.08);
+    }
+
+    .app-shell {
+      display: none;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 6px 0 22px;
+      padding: 0 2px;
+    }
+
+    .header-left {
+      min-width: 0;
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+      margin-bottom: 4px;
+    }
+
+    .header-subtitle {
+      color: var(--muted);
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-logout {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--accent);
+      border: 1px solid rgba(123, 31, 36, 0.18);
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-logout:hover {
+      background: white;
+      transform: translateY(-1px);
+    }
+
+    .cards {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border-soft);
+      border-radius: 22px;
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18px;
+      bottom: 18px;
+      width: 4px;
+      border-radius: 4px;
+      background: linear-gradient(to bottom, var(--accent), #b25f4d);
+      opacity: 0.9;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding-left: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card-date {
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
+      font-size: 1.24rem;
+      line-height: 1.2;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 4px;
+    }
+
+    .card-cartel {
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .libres-tag {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .tag-green {
+      background: var(--ok-soft);
+      color: var(--ok);
+      border-color: rgba(31, 122, 79, 0.32);
+    }
+
+    .tag-red {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: rgba(180, 35, 24, 0.28);
+    }
+
+    .nombres-container {
+      display: grid;
+      gap: 10px;
+      margin-top: 4px;
+      padding-left: 12px;
+    }
+
+    .persona-row {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(123, 31, 36, 0.08);
+      border-radius: 16px;
+      padding: 12px 12px 10px;
+      cursor: pointer;
+      transition: 0.22s ease;
+    }
+
+    .persona-row:hover {
+      background: white;
+      border-color: rgba(123, 31, 36, 0.18);
+      box-shadow: 0 6px 18px rgba(66, 40, 26, 0.06);
+    }
+
+    .persona-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 10px;
+    }
+
+    .persona-user {
+      font-size: 0.72rem;
+      color: var(--gold);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      min-width: fit-content;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.87rem;
+      background: #fff;
+      border: 1px solid #ddd1c4;
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(50, 35, 24, 0.04);
+    }
+
+    .chip.validado {
+      background: var(--ok-soft);
+      color: var(--ok);
+      border-color: rgba(31, 122, 79, 0.28);
+      font-weight: 700;
+    }
+
+    .gestion-panel {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(123, 31, 36, 0.1);
+      display: none;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-gestion {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: white;
+      color: var(--text);
+      border: 1px solid #d8cbc0;
+    }
+
+    .btn-gestion:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(50, 35, 24, 0.08);
+    }
+
+    .btn-del {
+      background: var(--accent);
+      color: white;
+      border-color: transparent;
+    }
+
+    .btn-ok {
+      background: var(--ok);
+      color: white;
+      border-color: transparent;
+    }
+
+    .form-add {
+      margin-top: 14px;
+      padding: 14px 0 2px 12px;
+      border-top: 1px solid rgba(123, 31, 36, 0.08);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      padding: 13px 14px;
+      border: 1px solid #d8cbc0;
+      border-radius: 14px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--text);
+      outline: none;
+      transition: 0.18s ease;
+      box-shadow: inset 0 1px 2px rgba(40, 24, 16, 0.03);
+    }
+
+    input:focus {
+      border-color: rgba(123, 31, 36, 0.5);
+      box-shadow: 0 0 0 4px rgba(123, 31, 36, 0.08);
+      background: white;
+    }
+
+    .btn-add {
+      padding: 13px 18px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: white;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      box-shadow: 0 8px 16px rgba(123, 31, 36, 0.18);
+    }
+
+    .btn-add:hover {
+      background: #6d191f;
+      transform: translateY(-1px);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px 18px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px dashed rgba(123, 31, 36, 0.2);
+      border-radius: 18px;
+    }
+
+    @media (max-width: 640px) {
+      .banner-cartel {
+        height: 150px;
+      }
+
+      .container {
+        padding: 14px 12px 32px;
+      }
+
+      .login-box {
+        padding: 28px 18px 22px;
+        border-radius: 22px;
+      }
+
+      .header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .btn-logout {
+        align-self: flex-start;
+      }
+
+      .card {
+        padding: 16px 14px 14px;
+        border-radius: 18px;
+      }
+
+      .card-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-add {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div id="deco-header" class="banner-cartel" style="display:none;"></div>
 
-<div id="deco-header" class="banner-cartel" style="display:none;"></div>
-
-<div class="container">
-    <div id="login" style="text-align:center; padding-top:40px;">
-        <div class="login-box">
-            <img src="https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png" style="width: 100px; border-radius: 10px; margin-bottom: 15px;">
-            <h1 style="color:var(--accent); font-family:Georgia, serif; margin:0;">SEVILLA 2026</h1>
-            <p>Selecciona tu perfil</p>
-            <div id="perfiles" style="margin-top:20px"></div>
-        </div>
+  <div class="container">
+    <div id="login" class="login-wrap">
+      <div class="login-box">
+        <img
+          class="login-image"
+          src="https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png"
+          alt="Cartel Sevilla 2026"
+        />
+        <div class="eyebrow">Feria de Abril</div>
+        <h1 class="login-title">Sevilla 2026</h1>
+        <p class="login-subtitle">Acceso al gestor familiar de invitaciones y plazas disponibles.</p>
+        <div id="perfiles" class="profile-list"></div>
+      </div>
     </div>
 
-    <div id="app" style="display:none;">
-        <div class="header">
-            <h1 id="user-title"></h1>
-            <button class="btn-logout" onclick="location.reload()">SALIR</button>
+    <div id="app" class="app-shell">
+      <div class="header">
+        <div class="header-left">
+          <h1 id="user-title" class="header-title"></h1>
+          <div class="header-subtitle">Gestión de solicitudes e invitaciones</div>
         </div>
-        <div id="lista-corridas"></div>
-    </div>
-</div>
+        <button class="btn-logout" onclick="location.reload()">Salir</button>
+      </div>
 
-<script>
+      <div id="lista-corridas" class="cards"></div>
+    </div>
+  </div>
+
+  <script>
     const SB_URL = "https://ltmyegtxypgfdfjgjwmu.supabase.co";
     const SB_KEY = "sb_publishable_f-u-qWgvej9sugHj6yWYCA_GfVPAM5a";
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
     let miUsuario = "";
+    let intervalId = null;
     const perfiles = ["Mónica", "Reyes", "Salvador", "Papa&Mamá"];
-    
-    document.getElementById('perfiles').innerHTML = perfiles.map(p => 
-        `<button class="btn-add" style="margin-bottom:10px; background:white; color:var(--accent); border:2px solid var(--accent)" onclick="entrar('${p}')">${p}</button>`
-    ).join('');
+
+    document.getElementById("perfiles").innerHTML = perfiles
+      .map(
+        (p) => `
+          <button class="profile-btn" onclick="entrar('${p}')">${p}</button>
+        `
+      )
+      .join("");
 
     function entrar(u) {
-        miUsuario = u;
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        document.getElementById('deco-header').style.display = 'block';
-        document.getElementById('user-title').innerText = u;
-        render();
-        setInterval(render, 15000);
+      miUsuario = u;
+      document.getElementById("login").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      document.getElementById("deco-header").style.display = "block";
+      document.getElementById("user-title").innerText = u;
+      render();
+
+      if (intervalId) clearInterval(intervalId);
+      intervalId = setInterval(render, 15000);
+    }
+
+    function formatFecha(fecha) {
+      return new Date(fecha).toLocaleDateString("es-ES", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      });
     }
 
     async function render() {
-        const { data: corridas } = await supabaseClient.from('gestor_toros').select('*').order('fecha');
-        let html = "";
-        corridas.forEach(c => {
-            const peticiones = c.peticiones || [];
-            const countOK = peticiones.filter(p => p.estado === 'OK').reduce((acc, p) => acc + p.nombres.length, 0);
-            const libres = 4 - countOK;
+      const { data: corridas, error } = await supabaseClient
+        .from("gestor_toros")
+        .select("*")
+        .order("fecha");
 
-            html += `
-                <div class="card">
-                    <span class="libres-tag ${libres > 0 ? 'tag-green' : 'tag-red'}" title="Quedan ${libres} sitios">
-                        ${libres} LIBRES
-                    </span>
-                    <div class="card-date">${new Date(c.fecha).toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'})}</div>
-                    <div class="card-title">${c.titulo}</div>
-                    <div class="card-cartel">${c.cartel}</div>
-                    
-                    <div class="nombres-container">
-                        ${peticiones.map(p => {
-                            const esMio = (p.usuario === miUsuario || miUsuario === 'Papa&Mamá');
-                            return `
-                                <div class="persona-row" onclick="toggleGestion('${p.id}')">
-                                    <strong style="font-size:0.75rem; color:var(--gold)">${p.usuario.toUpperCase()}:</strong>
-                                    ${p.nombres.map(n => `<span class="chip ${p.estado==='OK' ? 'validado' : ''}">${n}</span>`).join('')}
-                                    
-                                    ${esMio ? `
-                                        <div id="gest-${p.id}" class="gestion-panel">
-                                            <button class="btn-gestion" onclick="editar('${c.id}','${p.id}')">✎ EDITAR</button>
-                                            <button class="btn-gestion btn-del" onclick="borrar('${c.id}','${p.id}')">✕ BORRAR</button>
-                                            ${miUsuario === 'Papa&Mamá' && p.estado === 'PENDIENTE' ? 
-                                                `<button class="btn-gestion btn-ok" onclick="validar('${c.id}','${p.id}')">✓ VALIDAR</button>` : ''}
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            `;
-                        }).join('')}
+      if (error) {
+        document.getElementById("lista-corridas").innerHTML = `
+          <div class="empty-state">
+            No se han podido cargar los datos.
+          </div>
+        `;
+        return;
+      }
+
+      if (!corridas || !corridas.length) {
+        document.getElementById("lista-corridas").innerHTML = `
+          <div class="empty-state">
+            No hay corridas disponibles.
+          </div>
+        `;
+        return;
+      }
+
+      let html = "";
+
+      corridas.forEach((c) => {
+        const peticiones = c.peticiones || [];
+        const countOK = peticiones
+          .filter((p) => p.estado === "OK")
+          .reduce((acc, p) => acc + (p.nombres?.length || 0), 0);
+
+        const libres = 4 - countOK;
+
+        html += `
+          <div class="card">
+            <div class="card-top">
+              <div>
+                <div class="card-date">${formatFecha(c.fecha)}</div>
+                <div class="card-title">${c.titulo || ""}</div>
+                <p class="card-cartel">${c.cartel || ""}</p>
+              </div>
+
+              <span class="libres-tag ${libres > 0 ? "tag-green" : "tag-red"}" title="Quedan ${libres} sitios">
+                ${libres} libres
+              </span>
+            </div>
+
+            <div class="nombres-container">
+              ${
+                peticiones.length
+                  ? peticiones
+                      .map((p) => {
+                        const esMio = p.usuario === miUsuario || miUsuario === "Papa&Mamá";
+
+                        return `
+                          <div class="persona-row" onclick="toggleGestion('${p.id}')">
+                            <div class="persona-top">
+                              <span class="persona-user">${(p.usuario || "").toUpperCase()}</span>
+                              <div class="chips">
+                                ${(p.nombres || [])
+                                  .map(
+                                    (n) =>
+                                      `<span class="chip ${p.estado === "OK" ? "validado" : ""}">${n}</span>`
+                                  )
+                                  .join("")}
+                              </div>
+                            </div>
+
+                            ${
+                              esMio
+                                ? `
+                                  <div id="gest-${p.id}" class="gestion-panel">
+                                    <button class="btn-gestion" onclick="editar(event, '${c.id}','${p.id}')">Editar</button>
+                                    <button class="btn-gestion btn-del" onclick="borrar(event, '${c.id}','${p.id}')">Borrar</button>
+                                    ${
+                                      miUsuario === "Papa&Mamá" && p.estado === "PENDIENTE"
+                                        ? `<button class="btn-gestion btn-ok" onclick="validar(event, '${c.id}','${p.id}')">Validar</button>`
+                                        : ""
+                                    }
+                                  </div>
+                                `
+                                : ""
+                            }
+                          </div>
+                        `;
+                      })
+                      .join("")
+                  : `<div class="empty-state" style="padding:18px 14px;">Aún no hay solicitudes.</div>`
+              }
+            </div>
+
+            ${
+              libres > 0
+                ? `
+                  <div class="form-add">
+                    <div class="form-row">
+                      <input type="text" id="in-${c.id}" placeholder="Nombre del invitado..." />
+                      <button class="btn-add" onclick="enviar('${c.id}')">Apuntar</button>
                     </div>
+                  </div>
+                `
+                : ""
+            }
+          </div>
+        `;
+      });
 
-                    ${libres > 0 ? `
-                        <div class="form-add">
-                            <input type="text" id="in-${c.id}" placeholder="Nombre del invitado...">
-                            <button class="btn-add" onclick="enviar('${c.id}')">APUNTAR</button>
-                        </div>
-                    ` : ''}
-                </div>`;
-        });
-        document.getElementById('lista-corridas').innerHTML = html;
+      document.getElementById("lista-corridas").innerHTML = html;
     }
 
     function toggleGestion(id) {
-        const el = document.getElementById('gest-' + id);
-        if (el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+      const el = document.getElementById("gest-" + id);
+      if (!el) return;
+      el.style.display = el.style.display === "flex" ? "none" : "flex";
     }
 
     async function enviar(cId) {
-        const val = document.getElementById('in-' + cId).value.trim();
-        if (!val) return;
-        const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const nuevas = [...(data.peticiones || []), { id: Date.now().toString(), usuario: miUsuario, nombres: [val], estado: 'PENDIENTE' }];
-        await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
-        render();
+      const input = document.getElementById("in-" + cId);
+      const val = input.value.trim();
+      if (!val) return;
+
+      const { data, error } = await supabaseClient
+        .from("gestor_toros")
+        .select("peticiones")
+        .eq("id", cId)
+        .single();
+
+      if (error) return;
+
+      const nuevas = [
+        ...(data.peticiones || []),
+        {
+          id: Date.now().toString(),
+          usuario: miUsuario,
+          nombres: [val],
+          estado: "PENDIENTE",
+        },
+      ];
+
+      await supabaseClient
+        .from("gestor_toros")
+        .update({ peticiones: nuevas })
+        .eq("id", cId);
+
+      input.value = "";
+      render();
     }
 
-    async function borrar(cId, resId) {
-        event.stopPropagation();
-        if(!confirm("¿Borrar?")) return;
-        const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const nuevas = data.peticiones.filter(p => p.id !== resId);
-        await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
-        render();
+    async function borrar(e, cId, resId) {
+      e.stopPropagation();
+      if (!confirm("¿Borrar esta solicitud?")) return;
+
+      const { data, error } = await supabaseClient
+        .from("gestor_toros")
+        .select("peticiones")
+        .eq("id", cId)
+        .single();
+
+      if (error) return;
+
+      const nuevas = (data.peticiones || []).filter((p) => p.id !== resId);
+
+      await supabaseClient
+        .from("gestor_toros")
+        .update({ peticiones: nuevas })
+        .eq("id", cId);
+
+      render();
     }
 
-    async function editar(cId, resId) {
-        event.stopPropagation();
-        const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const peticion = data.peticiones.find(p => p.id === resId);
-        const nuevo = prompt("Nuevo nombre:", peticion.nombres[0]);
-        if (!nuevo) return;
-        const nuevas = data.peticiones.map(p => p.id === resId ? {...p, nombres: [nuevo]} : p);
-        await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
-        render();
+    async function editar(e, cId, resId) {
+      e.stopPropagation();
+
+      const { data, error } = await supabaseClient
+        .from("gestor_toros")
+        .select("peticiones")
+        .eq("id", cId)
+        .single();
+
+      if (error) return;
+
+      const peticion = (data.peticiones || []).find((p) => p.id === resId);
+      if (!peticion) return;
+
+      const nuevo = prompt("Nuevo nombre:", peticion.nombres?.[0] || "");
+      if (!nuevo || !nuevo.trim()) return;
+
+      const nuevas = (data.peticiones || []).map((p) =>
+        p.id === resId ? { ...p, nombres: [nuevo.trim()] } : p
+      );
+
+      await supabaseClient
+        .from("gestor_toros")
+        .update({ peticiones: nuevas })
+        .eq("id", cId);
+
+      render();
     }
 
-    async function validar(cId, resId) {
-        event.stopPropagation();
-        const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const nuevas = data.peticiones.map(p => p.id === resId ? {...p, estado: 'OK'} : p);
-        await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
-        render();
+    async function validar(e, cId, resId) {
+      e.stopPropagation();
+
+      const { data, error } = await supabaseClient
+        .from("gestor_toros")
+        .select("peticiones")
+        .eq("id", cId)
+        .single();
+
+      if (error) return;
+
+      const nuevas = (data.peticiones || []).map((p) =>
+        p.id === resId ? { ...p, estado: "OK" } : p
+      );
+
+      await supabaseClient
+        .from("gestor_toros")
+        .update({ peticiones: nuevas })
+        .eq("id", cId);
+
+      render();
     }
-</script>
+  </script>
 </body>
 </html>
