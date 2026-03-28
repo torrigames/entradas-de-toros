@@ -7,138 +7,82 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #f7f1e8;
-      --bg-soft: rgba(255, 250, 244, 0.84);
-      --panel: rgba(255, 255, 255, 0.88);
-      --panel-strong: rgba(255, 255, 255, 0.96);
-      --text: #2d241f;
+      --bg: #f7f3ee;
+      --panel: rgba(255, 255, 255, 0.96);
+      --text: #2a211d;
       --muted: #7b6d63;
-      --border: #ddcfc1;
-      --border-soft: rgba(123, 31, 36, 0.12);
+      --border: #ddd1c4;
       --accent: #7b1f24;
-      --accent-2: #a84a4f;
       --accent-soft: rgba(123, 31, 36, 0.08);
       --ok: #1f7a4f;
       --ok-soft: #e7f4ec;
       --danger: #b42318;
       --danger-soft: #fdecea;
       --gold: #8b6a1d;
-      --shadow: 0 10px 30px rgba(54, 36, 24, 0.08);
-      --shadow-soft: 0 6px 18px rgba(54, 36, 24, 0.06);
-      --radius: 18px;
-      --radius-sm: 12px;
+      --shadow: 0 10px 28px rgba(55, 36, 24, 0.08);
+      --shadow-soft: 0 6px 18px rgba(55, 36, 24, 0.06);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
       color: var(--text);
-      background:
-        linear-gradient(rgba(247, 241, 232, 0.93), rgba(247, 241, 232, 0.95)),
-        url("https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png") center/cover fixed;
-      min-height: 100vh;
-    }
-
-    .banner-cartel {
-      width: 100%;
-      height: 180px;
-      background-image:
-        linear-gradient(to bottom, rgba(25, 16, 12, 0.18), rgba(247, 241, 232, 0.08)),
-        url("https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png");
-      background-size: cover;
-      background-position: center 18%;
-      border-bottom: 1px solid rgba(123, 31, 36, 0.25);
-      -webkit-mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
-      mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
     }
 
     .container {
       max-width: 760px;
       margin: 0 auto;
-      padding: 20px 16px 40px;
+      padding: 20px 14px 36px;
     }
 
     .login-wrap {
-      min-height: calc(100vh - 40px);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px 0;
     }
 
     .login-box {
       width: 100%;
-      max-width: 460px;
-      background: var(--panel-strong);
+      max-width: 440px;
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 34px 26px 28px;
+      border-radius: 24px;
+      padding: 30px 22px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
       text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .login-box::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(123, 31, 36, 0.06), transparent 36%),
-        linear-gradient(315deg, rgba(147, 100, 0, 0.05), transparent 30%);
-      pointer-events: none;
-    }
-
-    .login-box > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .login-image {
-      width: 96px;
-      height: 96px;
-      object-fit: cover;
-      border-radius: 18px;
-      display: block;
-      margin: 0 auto 18px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      border: 3px solid rgba(255, 255, 255, 0.8);
     }
 
     .eyebrow {
-      margin: 0 0 8px;
-      font-size: 0.72rem;
-      letter-spacing: 0.24em;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--gold);
       font-weight: 700;
+      margin-bottom: 8px;
     }
 
     .login-title,
-    .header-title {
-      margin: 0;
+    .header-title,
+    .card-title {
       font-family: Georgia, "Times New Roman", serif;
-      color: var(--accent);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
     }
 
     .login-title {
+      margin: 0;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       font-size: 2rem;
-      line-height: 1.1;
     }
 
     .login-subtitle {
-      margin: 10px auto 0;
+      margin: 10px 0 0;
       color: var(--muted);
-      max-width: 280px;
       line-height: 1.45;
-      font-size: 0.98rem;
     }
 
     .profile-list {
@@ -154,7 +98,7 @@
       appearance: none;
       border: none;
       cursor: pointer;
-      transition: 0.22s ease;
+      transition: 0.2s ease;
       font: inherit;
     }
 
@@ -166,15 +110,11 @@
       color: var(--accent);
       border: 1px solid rgba(123, 31, 36, 0.18);
       font-weight: 700;
-      letter-spacing: 0.03em;
-      box-shadow: 0 2px 8px rgba(76, 48, 33, 0.04);
     }
 
     .profile-btn:hover {
+      background: #fffafa;
       transform: translateY(-1px);
-      background: #fff8f8;
-      border-color: rgba(123, 31, 36, 0.34);
-      box-shadow: 0 8px 18px rgba(76, 48, 33, 0.08);
     }
 
     .app-shell {
@@ -186,40 +126,72 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin: 6px 0 22px;
-      padding: 0 2px;
-    }
-
-    .header-left {
-      min-width: 0;
+      margin-bottom: 16px;
     }
 
     .header-title {
+      margin: 0 0 4px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       font-size: 1.8rem;
-      margin-bottom: 4px;
     }
 
     .header-subtitle {
       color: var(--muted);
       font-size: 0.92rem;
-      letter-spacing: 0.02em;
     }
 
     .btn-logout {
-      flex-shrink: 0;
       padding: 10px 16px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.78);
+      background: white;
       color: var(--accent);
       border: 1px solid rgba(123, 31, 36, 0.18);
       font-weight: 700;
-      backdrop-filter: blur(8px);
       box-shadow: var(--shadow-soft);
+      flex-shrink: 0;
     }
 
     .btn-logout:hover {
-      background: white;
       transform: translateY(-1px);
+    }
+
+    .resumen-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .resumen-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .resumen-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stat-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .stat-pill strong {
+      color: var(--accent);
     }
 
     .cards {
@@ -229,32 +201,29 @@
 
     .card {
       background: var(--panel);
-      border: 1px solid var(--border-soft);
-      border-radius: 22px;
-      padding: 18px 18px 16px;
+      border: 1px solid rgba(123, 31, 36, 0.12);
+      border-radius: 20px;
+      padding: 18px 16px 16px;
       box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(10px);
       position: relative;
-      overflow: hidden;
     }
 
     .card::before {
       content: "";
       position: absolute;
       left: 0;
-      top: 18px;
-      bottom: 18px;
+      top: 16px;
+      bottom: 16px;
       width: 4px;
       border-radius: 4px;
-      background: linear-gradient(to bottom, var(--accent), #b25f4d);
-      opacity: 0.9;
+      background: linear-gradient(to bottom, var(--accent), #b05d4a);
     }
 
     .card-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 14px;
+      gap: 12px;
       padding-left: 12px;
       margin-bottom: 12px;
     }
@@ -263,75 +232,69 @@
       color: var(--gold);
       font-weight: 700;
       font-size: 0.78rem;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
 
     .card-title {
-      font-size: 1.24rem;
-      line-height: 1.2;
-      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.2rem;
       font-weight: 700;
+      margin: 0 0 5px;
       color: var(--accent);
-      margin: 0 0 4px;
     }
 
     .card-cartel {
       font-size: 0.95rem;
       color: var(--muted);
       font-style: italic;
-      line-height: 1.45;
       margin: 0;
+      line-height: 1.45;
     }
 
     .libres-tag {
-      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       padding: 8px 12px;
       border-radius: 999px;
       font-size: 0.75rem;
       font-weight: 800;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
       border: 1px solid;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .tag-green {
       background: var(--ok-soft);
       color: var(--ok);
-      border-color: rgba(31, 122, 79, 0.32);
+      border-color: rgba(31, 122, 79, 0.3);
     }
 
     .tag-red {
       background: var(--danger-soft);
       color: var(--danger);
-      border-color: rgba(180, 35, 24, 0.28);
+      border-color: rgba(180, 35, 24, 0.25);
     }
 
     .nombres-container {
       display: grid;
       gap: 10px;
-      margin-top: 4px;
       padding-left: 12px;
     }
 
     .persona-row {
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(255,255,255,0.86);
       border: 1px solid rgba(123, 31, 36, 0.08);
       border-radius: 16px;
-      padding: 12px 12px 10px;
+      padding: 12px;
       cursor: pointer;
-      transition: 0.22s ease;
+      transition: 0.2s ease;
     }
 
     .persona-row:hover {
       background: white;
-      border-color: rgba(123, 31, 36, 0.18);
-      box-shadow: 0 6px 18px rgba(66, 40, 26, 0.06);
+      border-color: rgba(123, 31, 36, 0.16);
     }
 
     .persona-top {
@@ -347,7 +310,6 @@
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      min-width: fit-content;
     }
 
     .chips {
@@ -365,9 +327,7 @@
       border-radius: 999px;
       font-size: 0.87rem;
       background: #fff;
-      border: 1px solid #ddd1c4;
-      color: var(--text);
-      box-shadow: 0 1px 4px rgba(50, 35, 24, 0.04);
+      border: 1px solid var(--border);
     }
 
     .chip.validado {
@@ -393,12 +353,7 @@
       font-weight: 700;
       background: white;
       color: var(--text);
-      border: 1px solid #d8cbc0;
-    }
-
-    .btn-gestion:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 14px rgba(50, 35, 24, 0.08);
+      border: 1px solid var(--border);
     }
 
     .btn-del {
@@ -429,20 +384,17 @@
       width: 100%;
       min-width: 0;
       padding: 13px 14px;
-      border: 1px solid #d8cbc0;
+      border: 1px solid var(--border);
       border-radius: 14px;
       font-size: 16px;
-      background: rgba(255, 255, 255, 0.86);
+      background: white;
       color: var(--text);
       outline: none;
-      transition: 0.18s ease;
-      box-shadow: inset 0 1px 2px rgba(40, 24, 16, 0.03);
     }
 
     input:focus {
-      border-color: rgba(123, 31, 36, 0.5);
+      border-color: rgba(123, 31, 36, 0.45);
       box-shadow: 0 0 0 4px rgba(123, 31, 36, 0.08);
-      background: white;
     }
 
     .btn-add {
@@ -451,51 +403,26 @@
       background: var(--accent);
       color: white;
       font-weight: 800;
-      letter-spacing: 0.04em;
       white-space: nowrap;
-      box-shadow: 0 8px 16px rgba(123, 31, 36, 0.18);
-    }
-
-    .btn-add:hover {
-      background: #6d191f;
-      transform: translateY(-1px);
     }
 
     .empty-state {
       text-align: center;
       color: var(--muted);
-      padding: 28px 18px;
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px dashed rgba(123, 31, 36, 0.2);
-      border-radius: 18px;
+      padding: 24px 16px;
+      background: rgba(255,255,255,0.82);
+      border: 1px dashed rgba(123, 31, 36, 0.18);
+      border-radius: 16px;
     }
 
     @media (max-width: 640px) {
-      .banner-cartel {
-        height: 150px;
-      }
-
       .container {
-        padding: 14px 12px 32px;
-      }
-
-      .login-box {
-        padding: 28px 18px 22px;
-        border-radius: 22px;
+        padding: 14px 12px 28px;
       }
 
       .header {
-        align-items: flex-start;
         flex-direction: column;
-      }
-
-      .btn-logout {
-        align-self: flex-start;
-      }
-
-      .card {
-        padding: 16px 14px 14px;
-        border-radius: 18px;
+        align-items: flex-start;
       }
 
       .card-top {
@@ -515,19 +442,12 @@
   </style>
 </head>
 <body>
-  <div id="deco-header" class="banner-cartel" style="display:none;"></div>
-
   <div class="container">
     <div id="login" class="login-wrap">
       <div class="login-box">
-        <img
-          class="login-image"
-          src="https://storage.googleapis.com/generate-v1-production/3b4df8/image_3b4df8.png"
-          alt="Cartel Sevilla 2026"
-        />
         <div class="eyebrow">Feria de Abril</div>
         <h1 class="login-title">Sevilla 2026</h1>
-        <p class="login-subtitle">Acceso al gestor familiar de invitaciones y plazas disponibles.</p>
+        <p class="login-subtitle">Selecciona tu perfil para entrar en la gestión de invitaciones.</p>
         <div id="perfiles" class="profile-list"></div>
       </div>
     </div>
@@ -541,6 +461,7 @@
         <button class="btn-logout" onclick="location.reload()">Salir</button>
       </div>
 
+      <div id="resumen-concedidas"></div>
       <div id="lista-corridas" class="cards"></div>
     </div>
   </div>
@@ -552,21 +473,18 @@
 
     let miUsuario = "";
     let intervalId = null;
+
     const perfiles = ["Mónica", "Reyes", "Salvador", "Papa&Mamá"];
+    const hijos = ["Mónica", "Reyes", "Salvador"];
 
     document.getElementById("perfiles").innerHTML = perfiles
-      .map(
-        (p) => `
-          <button class="profile-btn" onclick="entrar('${p}')">${p}</button>
-        `
-      )
+      .map((p) => `<button class="profile-btn" onclick="entrar('${p}')">${p}</button>`)
       .join("");
 
     function entrar(u) {
       miUsuario = u;
       document.getElementById("login").style.display = "none";
       document.getElementById("app").style.display = "block";
-      document.getElementById("deco-header").style.display = "block";
       document.getElementById("user-title").innerText = u;
       render();
 
@@ -578,7 +496,7 @@
       return new Date(fecha).toLocaleDateString("es-ES", {
         weekday: "long",
         day: "numeric",
-        month: "long",
+        month: "long"
       });
     }
 
@@ -589,29 +507,53 @@
         .order("fecha");
 
       if (error) {
+        document.getElementById("resumen-concedidas").innerHTML = "";
         document.getElementById("lista-corridas").innerHTML = `
-          <div class="empty-state">
-            No se han podido cargar los datos.
-          </div>
+          <div class="empty-state">No se han podido cargar los datos.</div>
         `;
         return;
       }
 
       if (!corridas || !corridas.length) {
+        document.getElementById("resumen-concedidas").innerHTML = "";
         document.getElementById("lista-corridas").innerHTML = `
-          <div class="empty-state">
-            No hay corridas disponibles.
-          </div>
+          <div class="empty-state">No hay corridas disponibles.</div>
         `;
         return;
       }
 
+      const concedidasPorHijo = {
+        "Mónica": 0,
+        "Reyes": 0,
+        "Salvador": 0
+      };
+
+      corridas.forEach(c => {
+        const peticiones = c.peticiones || [];
+        peticiones.forEach(p => {
+          if (hijos.includes(p.usuario) && p.estado === "OK") {
+            concedidasPorHijo[p.usuario] += (p.nombres?.length || 0);
+          }
+        });
+      });
+
+      document.getElementById("resumen-concedidas").innerHTML = `
+        <div class="resumen-box">
+          <div class="resumen-title">Concedidas acumuladas</div>
+          <div class="resumen-grid">
+            <div class="stat-pill">Mónica: <strong>${concedidasPorHijo["Mónica"]}</strong></div>
+            <div class="stat-pill">Reyes: <strong>${concedidasPorHijo["Reyes"]}</strong></div>
+            <div class="stat-pill">Salvador: <strong>${concedidasPorHijo["Salvador"]}</strong></div>
+          </div>
+        </div>
+      `;
+
       let html = "";
 
-      corridas.forEach((c) => {
+      corridas.forEach(c => {
         const peticiones = c.peticiones || [];
         const countOK = peticiones
-          .filter((p) => p.estado === "OK")
+          .filter(p => p.estado === "OK")
           .reduce((acc, p) => acc + (p.nombres?.length || 0), 0);
 
         const libres = 4 - countOK;
@@ -624,7 +566,6 @@
                 <div class="card-title">${c.titulo || ""}</div>
                 <p class="card-cartel">${c.cartel || ""}</p>
               </div>
-
               <span class="libres-tag ${libres > 0 ? "tag-green" : "tag-red"}" title="Quedan ${libres} sitios">
                 ${libres} libres
               </span>
@@ -633,58 +574,48 @@
             <div class="nombres-container">
               ${
                 peticiones.length
-                  ? peticiones
-                      .map((p) => {
-                        const esMio = p.usuario === miUsuario || miUsuario === "Papa&Mamá";
-
-                        return `
-                          <div class="persona-row" onclick="toggleGestion('${p.id}')">
-                            <div class="persona-top">
-                              <span class="persona-user">${(p.usuario || "").toUpperCase()}</span>
-                              <div class="chips">
-                                ${(p.nombres || [])
-                                  .map(
-                                    (n) =>
-                                      `<span class="chip ${p.estado === "OK" ? "validado" : ""}">${n}</span>`
-                                  )
-                                  .join("")}
-                              </div>
+                  ? peticiones.map(p => {
+                      const esMio = (p.usuario === miUsuario || miUsuario === "Papa&Mamá");
+                      return `
+                        <div class="persona-row" onclick="toggleGestion('${p.id}')">
+                          <div class="persona-top">
+                            <span class="persona-user">${(p.usuario || "").toUpperCase()}</span>
+                            <div class="chips">
+                              ${(p.nombres || []).map(n =>
+                                `<span class="chip ${p.estado === "OK" ? "validado" : ""}">${n}</span>`
+                              ).join("")}
                             </div>
-
-                            ${
-                              esMio
-                                ? `
-                                  <div id="gest-${p.id}" class="gestion-panel">
-                                    <button class="btn-gestion" onclick="editar(event, '${c.id}','${p.id}')">Editar</button>
-                                    <button class="btn-gestion btn-del" onclick="borrar(event, '${c.id}','${p.id}')">Borrar</button>
-                                    ${
-                                      miUsuario === "Papa&Mamá" && p.estado === "PENDIENTE"
-                                        ? `<button class="btn-gestion btn-ok" onclick="validar(event, '${c.id}','${p.id}')">Validar</button>`
-                                        : ""
-                                    }
-                                  </div>
-                                `
-                                : ""
-                            }
                           </div>
-                        `;
-                      })
-                      .join("")
+
+                          ${
+                            esMio ? `
+                              <div id="gest-${p.id}" class="gestion-panel">
+                                <button class="btn-gestion" onclick="editar(event, '${c.id}', '${p.id}')">Editar</button>
+                                <button class="btn-gestion btn-del" onclick="borrar(event, '${c.id}', '${p.id}')">Borrar</button>
+                                ${
+                                  miUsuario === "Papa&Mamá" && p.estado === "PENDIENTE"
+                                    ? `<button class="btn-gestion btn-ok" onclick="validar(event, '${c.id}', '${p.id}')">Validar</button>`
+                                    : ""
+                                }
+                              </div>
+                            ` : ""
+                          }
+                        </div>
+                      `;
+                    }).join("")
                   : `<div class="empty-state" style="padding:18px 14px;">Aún no hay solicitudes.</div>`
               }
             </div>
 
             ${
-              libres > 0
-                ? `
-                  <div class="form-add">
-                    <div class="form-row">
-                      <input type="text" id="in-${c.id}" placeholder="Nombre del invitado..." />
-                      <button class="btn-add" onclick="enviar('${c.id}')">Apuntar</button>
-                    </div>
+              libres > 0 ? `
+                <div class="form-add">
+                  <div class="form-row">
+                    <input type="text" id="in-${c.id}" placeholder="Nombre del invitado..." />
+                    <button class="btn-add" onclick="enviar('${c.id}')">Apuntar</button>
                   </div>
-                `
-                : ""
+                </div>
+              ` : ""
             }
           </div>
         `;
@@ -718,8 +649,8 @@
           id: Date.now().toString(),
           usuario: miUsuario,
           nombres: [val],
-          estado: "PENDIENTE",
-        },
+          estado: "PENDIENTE"
+        }
       ];
 
       await supabaseClient
@@ -743,7 +674,7 @@
 
       if (error) return;
 
-      const nuevas = (data.peticiones || []).filter((p) => p.id !== resId);
+      const nuevas = (data.peticiones || []).filter(p => p.id !== resId);
 
       await supabaseClient
         .from("gestor_toros")
@@ -764,13 +695,13 @@
 
       if (error) return;
 
-      const peticion = (data.peticiones || []).find((p) => p.id === resId);
+      const peticion = (data.peticiones || []).find(p => p.id === resId);
       if (!peticion) return;
 
       const nuevo = prompt("Nuevo nombre:", peticion.nombres?.[0] || "");
       if (!nuevo || !nuevo.trim()) return;
 
-      const nuevas = (data.peticiones || []).map((p) =>
+      const nuevas = (data.peticiones || []).map(p =>
         p.id === resId ? { ...p, nombres: [nuevo.trim()] } : p
       );
 
@@ -793,7 +724,21 @@
 
       if (error) return;
 
-      const nuevas = (data.peticiones || []).map((p) =>
+      const peticion = (data.peticiones || []).find(p => p.id === resId);
+      if (!peticion) return;
+
+      const countOKActual = (data.peticiones || [])
+        .filter(p => p.estado === "OK")
+        .reduce((acc, p) => acc + (p.nombres?.length || 0), 0);
+
+      const plazasPeticion = peticion.nombres?.length || 0;
+
+      if (countOKActual + plazasPeticion > 4) {
+        alert("No hay plazas suficientes para conceder esta petición.");
+        return;
+      }
+
+      const nuevas = (data.peticiones || []).map(p =>
         p.id === resId ? { ...p, estado: "OK" } : p
       );
 
