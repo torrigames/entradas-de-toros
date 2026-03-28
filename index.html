@@ -13,47 +13,50 @@
         body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 15px; margin: 0; }
         .container { max-width: 600px; margin: 0 auto; }
         .card { background: var(--panel); border-radius: 16px; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .header { text-align: center; padding: 20px 0; }
+        .header { text-align: center; padding: 10px 0; position: relative; }
         
-        /* Tabla de acumulados */
-        .stats-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: white; border-radius: 10px; overflow: hidden; font-size: 0.9rem; }
-        .stats-table th { background: var(--accent); color: white; padding: 10px; }
-        .stats-table td { padding: 10px; border: 1px solid var(--border); text-align: center; }
+        .stats-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: white; border-radius: 10px; overflow: hidden; font-size: 0.85rem; border: 1px solid var(--border); }
+        .stats-table th { background: var(--accent); color: white; padding: 8px; }
+        .stats-table td { padding: 8px; border: 1px solid var(--border); text-align: center; }
 
-        /* Estados */
-        .status-badge { float: right; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+        .status-badge { float: right; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; }
         .bg-ok { background: #e8f6ee; color: var(--ok); }
         .bg-wait { background: #fff4d9; color: #936400; }
         .bg-danger { background: #fdecea; color: var(--danger); }
 
-        .btn-perfil { width: 100%; padding: 15px; margin: 5px 0; border: 2px solid var(--accent); background: white; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-perfil { width: 100%; padding: 15px; margin: 5px 0; border: 2px solid var(--accent); background: white; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; color: var(--accent); }
+        .btn-logout { position: absolute; top: 10px; right: 0; background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 0.8rem; }
+
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-        input { padding: 10px; border: 1px solid var(--border); border-radius: 8px; width: 100%; box-sizing: border-box; }
+        input { padding: 10px; border: 1px solid var(--border); border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 14px; }
+        
         .btn-solicitar { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 0.8rem; border: 1px solid #ccc; }
-        .chip.confirmado { background: #e8f6ee; border-color: var(--ok); color: var(--ok); }
+        .btn-validar { background: var(--ok); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; font-weight: bold; }
+        
+        .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 0.8rem; border: 1px solid #ccc; background: #fff; }
+        .chip.confirmado { background: #e8f6ee; border-color: var(--ok); color: var(--ok); font-weight: bold; }
+        .peticion-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="pantalla-login">
-        <div class="header"><h1>Sevilla 2026</h1><p>Selecciona tu perfil</p></div>
+        <div class="header"><h1>Sevilla 2026</h1><p>Selecciona quién eres:</p></div>
         <button class="btn-perfil" onclick="entrar('Mónica')">Mónica</button>
         <button class="btn-perfil" onclick="entrar('Reyes')">Reyes</button>
         <button class="btn-perfil" onclick="entrar('Salvador')">Salvador</button>
-        <button class="btn-perfil" onclick="entrar('Papa&Mamá')">Papa & Mamá</button>
+        <button class="btn-perfil" onclick="entrar('Papa&Mamá')" style="background: #fdf2f2;">Papa & Mamá</button>
     </div>
 
     <div id="pantalla-app" style="display:none;">
         <div class="header">
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
             <h2 id="user-title" style="margin:0; color:var(--accent)"></h2>
-            <p id="stats-summary" style="font-size:0.9rem; color:var(--muted)"></p>
         </div>
 
-        <h3>Resumen de Entradas</h3>
-        <table class="stats-table" id="tabla-stats">
-            <thead><tr><th>Usuario</th><th>Pedidas</th><th>Adjudicadas</th></tr></thead>
+        <table class="stats-table">
+            <thead><tr><th>Usuario</th><th>Pedidas</th><th>Confirmadas</th></tr></thead>
             <tbody id="stats-body"></tbody>
         </table>
 
@@ -67,18 +70,24 @@
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
     let usuarioActual = "";
-    let inputsTemp = {}; // Para no perder lo que escribes
+    let inputsTemp = {}; 
 
     function entrar(user) {
         usuarioActual = user;
         document.getElementById('pantalla-login').style.display = 'none';
         document.getElementById('pantalla-app').style.display = 'block';
-        document.getElementById('user-title').innerText = "Panel de " + user;
+        document.getElementById('user-title').innerText = "Panel: " + user;
         render();
-        setInterval(render, 10000); // Refresco cada 10s
+        // Sincronización automática cada 15 segundos
+        window.syncInterval = setInterval(render, 15000);
     }
 
-    // Guardar lo que el usuario escribe para que no se borre al refrescar
+    function logout() {
+        clearInterval(window.syncInterval);
+        document.getElementById('pantalla-login').style.display = 'block';
+        document.getElementById('pantalla-app').style.display = 'none';
+    }
+
     function saveInput(cId, idx, val) {
         if (!inputsTemp[cId]) inputsTemp[cId] = {};
         inputsTemp[cId][idx] = val;
@@ -89,18 +98,19 @@
         if (!corridas) return;
 
         let html = "";
-        let globalStats = { "Mónica": {p:0, a:0}, "Reyes": {p:0, a:0}, "Salvador": {p:0, a:0} };
+        let globalStats = { "Mónica": {p:0, a:0}, "Reyes": {p:0, a:0}, "Salvador": {p:0, a:0}, "Papa&Mamá": {p:0, a:0} };
 
         corridas.forEach(c => {
             const peticiones = c.peticiones || [];
-            const confirmadasCount = peticiones.filter(p => p.estado === 'OK').reduce((acc, p) => acc + p.nombres.length, 0);
-            const pendientesCount = peticiones.filter(p => p.estado === 'PENDIENTE').reduce((acc, p) => acc + p.nombres.length, 0);
+            const confirmadas = peticiones.filter(p => p.estado === 'OK');
+            const pendientes = peticiones.filter(p => p.estado === 'PENDIENTE');
             
-            const totalSolicitadas = confirmadasCount + pendientesCount;
-            const libres = 4 - confirmadasCount;
-            const balanceReal = 4 - totalSolicitadas;
+            const countOK = confirmadas.reduce((acc, p) => acc + p.nombres.length, 0);
+            const countWait = pendientes.reduce((acc, p) => acc + p.nombres.length, 0);
+            
+            const libres = 4 - countOK;
+            const balanceReal = 4 - (countOK + countWait);
 
-            // Calcular acumulados globales
             peticiones.forEach(p => {
                 if (globalStats[p.usuario]) {
                     globalStats[p.usuario].p += p.nombres.length;
@@ -108,51 +118,49 @@
                 }
             });
 
-            // Lógica de colores del badge
             let badgeClass = "bg-ok";
             let badgeText = `${libres} Libres`;
-            if (pendientesCount > 0) {
-                badgeClass = "bg-wait";
-                badgeText = `${libres} Libres (${pendientesCount} en espera)`;
-            }
-            if (balanceReal < 0) {
-                badgeClass = "bg-danger";
-                badgeText = `SOBRECUPO: ${Math.abs(balanceReal)} de más`;
-            }
+            if (countWait > 0) { badgeClass = "bg-wait"; badgeText = `${libres} Libres (${countWait} esperando)`; }
+            if (balanceReal < 0) { badgeClass = "bg-danger"; badgeText = `SOBRECUPO: ${Math.abs(balanceReal)}`; }
 
             html += `
                 <div class="card">
                     <div class="status-badge ${badgeClass}">${badgeText}</div>
                     <div style="font-weight:bold; color:var(--accent); font-size:0.8rem">${new Date(c.fecha).toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'})}</div>
-                    <div style="font-size:1.2rem; font-weight:800; margin:5px 0">${c.titulo}</div>
-                    <div style="color:var(--muted); font-size:0.9rem; margin-bottom:15px">${c.cartel}</div>
+                    <div style="font-size:1.1rem; font-weight:800; margin:4px 0">${c.titulo}</div>
+                    <div style="color:var(--muted); font-size:0.9rem; margin-bottom:12px">${c.cartel}</div>
                     
-                    <div style="border-top: 1px solid #eee; padding-top:10px">
+                    <div style="margin-bottom:10px">
                         ${peticiones.map(res => `
-                            <div style="margin-bottom:5px; font-size:0.85rem">
-                                <strong>${res.usuario}:</strong> 
-                                ${res.nombres.map(n => `<span class="chip ${res.estado==='OK'?'confirmado':''}">${n}</span>`).join('')}
+                            <div class="peticion-row">
+                                <span>
+                                    <strong style="font-size:0.8rem">${res.usuario}:</strong> 
+                                    ${res.nombres.map(n => `<span class="chip ${res.estado==='OK'?'confirmado':''}">${n}</span>`).join('')}
+                                </span>
                                 ${usuarioActual === 'Papa&Mamá' && res.estado === 'PENDIENTE' ? 
-                                    `<button onclick="validar('${c.id}','${res.id}')" style="cursor:pointer">Validar</button>` : ''}
+                                    `<button class="btn-validar" onclick="validar('${c.id}','${res.id}')">VALIDAR</button>` : ''}
                             </div>
                         `).join('')}
                     </div>
 
                     ${libres > 0 ? `
-                        <div class="grid-inputs">
-                            ${[0,1,2,3].slice(0, libres).map(i => {
-                                const val = (inputsTemp[c.id] && inputsTemp[c.id][i]) ? inputsTemp[c.id][i] : "";
-                                return `<input type="text" id="in-${c.id}-${i}" value="${val}" oninput="saveInput('${c.id}', ${i}, this.value)" placeholder="Nombre">`
-                            }).join('')}
+                        <div style="background:#f9f9f9; padding:10px; border-radius:10px; border: 1px solid #eee">
+                            <div class="grid-inputs">
+                                ${Array.from({length: libres}).map((_, i) => {
+                                    const val = (inputsTemp[c.id] && inputsTemp[c.id][i]) ? inputsTemp[c.id][i] : "";
+                                    return `<input type="text" id="in-${c.id}-${i}" value="${val}" oninput="saveInput('${c.id}', ${i}, this.value)" placeholder="Invitado ${i+1}">`
+                                }).join('')}
+                            </div>
+                            <button class="btn-solicitar" onclick="solicitar('${c.id}', ${libres})">
+                                ${usuarioActual === 'Papa&Mamá' ? 'Anotar Petición' : 'Solicitar Entradas'}
+                            </button>
                         </div>
-                        <button class="btn-solicitar" onclick="solicitar('${c.id}', ${libres})">Solicitar Entradas</button>
                     ` : ''}
                 </div>`;
         });
 
         document.getElementById('lista-corridas').innerHTML = html;
 
-        // Actualizar Tabla de Stats
         let statsHtml = "";
         for (let u in globalStats) {
             statsHtml += `<tr><td>${u}</td><td>${globalStats[u].p}</td><td style="color:var(--ok); font-weight:bold">${globalStats[u].a}</td></tr>`;
@@ -169,15 +177,17 @@
         if(!nombres.length) return alert("Escribe nombres antes de enviar");
 
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
+        
+        // Ahora Papa&Mamá también entran como PENDIENTE para que ellos decidan cuándo validar
         const nuevas = [...(data.peticiones || []), {
             id: Date.now().toString(),
             usuario: usuarioActual,
             nombres: nombres,
-            estado: usuarioActual === 'Papa&Mamá' ? 'OK' : 'PENDIENTE'
+            estado: 'PENDIENTE' 
         }];
 
         await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
-        inputsTemp[cId] = {}; // Limpiar temporales de esta corrida
+        inputsTemp[cId] = {}; 
         render();
     }
 
