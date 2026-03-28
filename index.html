@@ -3,160 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sevilla 2026 · Gestión Familiar</title>
+    <title>Sevilla 2026 · Control Total</title>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg: #f6f2ec; --panel: #ffffff; --text: #231f1c; --muted: #6d655f;
-            --border: #dfd4c8; --accent: #7b1f24; --ok: #1b7b4b; --danger: #b42318;
+            --border: #dfd4c8; --accent: #7b1f24; --ok: #1b7b4b; --wait: #936400; --danger: #b42318;
         }
-        body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 15px; margin: 0; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
         .container { max-width: 600px; margin: 0 auto; }
-        .card { background: var(--panel); border-radius: 16px; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; }
+        .card { background: var(--panel); border-radius: 16px; border: 1px solid var(--border); padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        .header { text-align: center; padding: 10px 0; position: relative; }
-        .btn-logout { position: absolute; top: 10px; right: 0; background: #eee; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; }
+        /* Notificaciones para Papa&Mamá */
+        .notificaciones { background: #fff4f4; border: 1px solid var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 20px; font-size: 0.85rem; }
+        
+        .header { text-align: center; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .btn-logout { background: #eee; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
 
-        .status-badge { float: right; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.7rem; text-transform: uppercase; }
+        .badge { float: right; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 0.7rem; }
         .bg-ok { background: #e8f6ee; color: var(--ok); }
-        .bg-wait { background: #fff4d9; color: #936400; }
-        .bg-danger { background: #fdecea; color: var(--danger); }
+        .bg-full { background: #fdecea; color: var(--danger); }
 
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-        input { padding: 12px; border: 1px solid var(--border); border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 16px; /* 16px evita zoom en iPhone */ }
+        .peticion-box { background: #fcfcfc; border: 1px solid #eee; border-radius: 10px; padding: 10px; margin: 10px 0; }
+        .chip { display: inline-block; padding: 3px 10px; border-radius: 15px; background: #eee; font-size: 0.85rem; margin: 2px; border: 1px solid #ccc; }
+        .chip.ok { background: #e8f6ee; color: var(--ok); border-color: var(--ok); }
         
-        .btn-solicitar { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        
-        .peticion-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid #eee; }
-        .chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 12px; margin: 2px; font-size: 0.85rem; border: 1px solid #ccc; background: #fff; }
-        .chip.confirmado { background: #e8f6ee; border-color: var(--ok); color: var(--ok); font-weight: bold; }
-        
-        .acciones-btn { margin-left: 8px; cursor: pointer; opacity: 0.6; font-size: 0.9rem; }
-        .acciones-btn:hover { opacity: 1; }
+        .btn-accion { font-size: 0.7rem; padding: 3px 8px; margin-left: 5px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; background: white; }
+        .btn-del { color: var(--danger); border-color: var(--danger); }
+        .btn-validar { background: var(--ok); color: white; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-        .btn-validar { background: var(--ok); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        input { padding: 12px; border: 1px solid var(--border); border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 16px; margin-bottom: 8px; }
+        .btn-enviar { background: var(--accent); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="pantalla-login">
-        <div class="header"><h1>Sevilla 2026</h1><p>Selecciona tu perfil:</p></div>
-        <button class="btn-perfil" onclick="entrar('Mónica')" style="width:100%; padding:15px; margin:5px 0; border:2px solid var(--accent); background:white; border-radius:12px; font-weight:bold; color:var(--accent);">Mónica</button>
-        <button class="btn-perfil" onclick="entrar('Reyes')" style="width:100%; padding:15px; margin:5px 0; border:2px solid var(--accent); background:white; border-radius:12px; font-weight:bold; color:var(--accent);">Reyes</button>
-        <button class="btn-perfil" onclick="entrar('Salvador')" style="width:100%; padding:15px; margin:5px 0; border:2px solid var(--accent); background:white; border-radius:12px; font-weight:bold; color:var(--accent);">Salvador</button>
-        <button class="btn-perfil" onclick="entrar('Papa&Mamá')" style="width:100%; padding:15px; margin:5px 0; border:2px solid var(--accent); background:#fdf2f2; border-radius:12px; font-weight:bold; color:var(--accent);">Papa & Mamá</button>
+    <div id="pantalla-login" style="text-align:center; padding-top:50px;">
+        <h1>Sevilla 2026</h1>
+        <div id="perfiles"></div>
     </div>
 
     <div id="pantalla-app" style="display:none;">
         <div class="header">
-            <button class="btn-logout" onclick="logout()">Salir</button>
-            <h2 id="user-title" style="margin:0; color:var(--accent); font-size: 1.2rem;"></h2>
+            <h2 id="user-display" style="margin:0; font-size:1.1rem; color:var(--accent)"></h2>
+            <button class="btn-logout" onclick="location.reload()">Cambiar Perfil</button>
         </div>
+
+        <div id="avisos-admin" class="notificaciones" style="display:none;">
+            <strong>Avisos de Bajas:</strong>
+            <ul id="lista-bajas" style="margin:5px 0; padding-left:20px;"></ul>
+        </div>
+
         <div id="lista-corridas">Cargando...</div>
     </div>
 </div>
 
-<datalist id="lista-invitados"></datalist>
+<datalist id="invitados-previos"></datalist>
 
 <script>
     const SB_URL = "https://ltmyegtxypgfdfjgjwmu.supabase.co";
     const SB_KEY = "sb_publishable_f-u-qWgvej9sugHj6yWYCA_GfVPAM5a";
     const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 
-    let usuarioActual = "";
-    let inputsTemp = {}; 
-    let nombresConocidos = new Set();
+    let miUsuario = "";
+    let misInputs = {};
 
-    function entrar(user) {
-        usuarioActual = user;
+    // Crear botones de perfil dinámicos
+    const nombres = ["Mónica", "Reyes", "Salvador", "Papa&Mamá"];
+    document.getElementById('perfiles').innerHTML = nombres.map(n => 
+        `<button onclick="iniciar('${n}')" style="width:100%; padding:15px; margin:5px 0; border:2px solid var(--accent); background:white; border-radius:12px; font-weight:bold; color:var(--accent); cursor:pointer;">${n}</button>`
+    ).join('');
+
+    function iniciar(u) {
+        miUsuario = u;
         document.getElementById('pantalla-login').style.display = 'none';
         document.getElementById('pantalla-app').style.display = 'block';
-        document.getElementById('user-title').innerText = user;
+        document.getElementById('user-display').innerText = "Perfil: " + miUsuario;
+        if(miUsuario === 'Papa&Mamá') document.getElementById('avisos-admin').style.display = 'block';
         render();
-        window.syncInterval = setInterval(render, 15000);
-    }
-
-    function logout() {
-        clearInterval(window.syncInterval);
-        document.getElementById('pantalla-login').style.display = 'block';
-        document.getElementById('pantalla-app').style.display = 'none';
+        setInterval(render, 15000);
     }
 
     async function render() {
         const { data: corridas } = await supabaseClient.from('gestor_toros').select('*').order('fecha');
-        if (!corridas) return;
-
         let html = "";
-        nombresConocidos.clear();
+        let nombresUnicos = new Set();
+        let bajasRecientes = [];
 
         corridas.forEach(c => {
             const peticiones = c.peticiones || [];
-            const countOK = peticiones.filter(p => p.estado === 'OK').reduce((acc, p) => acc + p.nombres.length, 0);
-            const countWait = peticiones.filter(p => p.estado === 'PENDIENTE').reduce((acc, p) => acc + p.nombres.length, 0);
-            const libres = 4 - countOK;
-
-            // Alimentar el texto predictivo
-            peticiones.forEach(p => p.nombres.forEach(n => nombresConocidos.add(n)));
-
-            let badgeClass = libres > 0 ? "bg-ok" : "bg-danger";
-            let badgeText = `${libres} Libres`;
+            const confirmados = peticiones.filter(p => p.estado === 'OK').reduce((acc, p) => acc + p.nombres.length, 0);
+            const libres = 4 - confirmados;
 
             html += `
                 <div class="card">
-                    <div class="status-badge ${badgeClass}">${badgeText}</div>
+                    <div class="badge ${libres > 0 ? 'bg-ok' : 'bg-full'}">${libres > 0 ? libres + ' LIBRES' : 'COMPLETO'}</div>
                     <div style="font-weight:bold; color:var(--accent); font-size:0.75rem">${new Date(c.fecha).toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'})}</div>
-                    <div style="font-size:1.1rem; font-weight:800; margin:4px 0">${c.titulo}</div>
-                    <div style="color:var(--muted); font-size:0.85rem; margin-bottom:12px">${c.cartel}</div>
+                    <div style="font-size:1.1rem; font-weight:bold; margin:3px 0">${c.titulo}</div>
+                    <div style="color:var(--muted); font-size:0.85rem; margin-bottom:10px">${c.cartel}</div>
                     
-                    <div style="margin-bottom:10px">
-                        ${peticiones.map(res => `
-                            <div class="peticion-row">
-                                <span>
-                                    <strong style="font-size:0.8rem">${res.usuario}:</strong> 
-                                    ${res.nombres.map((n, idx) => `
-                                        <span class="chip ${res.estado==='OK'?'confirmado':''}">
-                                            ${n}
-                                            ${(res.usuario === usuarioActual || usuarioActual === 'Papa&Mamá') ? 
-                                                `<span class="acciones-btn" onclick="editarNombre('${c.id}','${res.id}',${idx},'${n}')">✎</span>` : ''}
-                                        </span>
-                                    `).join('')}
-                                </span>
-                                <div>
-                                    ${(res.usuario === usuarioActual || usuarioActual === 'Papa&Mamá') ? 
-                                        `<span class="acciones-btn" onclick="borrarPeticion('${c.id}','${res.id}')" style="color:var(--danger); margin-right:10px;">✕</span>` : ''}
-                                    ${usuarioActual === 'Papa&Mamá' && res.estado === 'PENDIENTE' ? 
-                                        `<button class="btn-validar" onclick="validar('${c.id}','${res.id}')">OK</button>` : ''}
+                    <div class="peticion-box">
+                        ${peticiones.length === 0 ? '<em style="font-size:0.8rem; color:#999">Sin peticiones aún</em>' : ''}
+                        ${peticiones.map(p => {
+                            p.nombres.forEach(n => nombresUnicos.add(n));
+                            const esMio = (p.usuario === miUsuario);
+                            return `
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; border-bottom:1px solid #f0f0f0; padding-bottom:5px;">
+                                    <div>
+                                        <b style="font-size:0.8rem">${p.usuario}:</b><br>
+                                        ${p.nombres.map((n, i) => `
+                                            <span class="chip ${p.estado==='OK' ? 'ok' : ''}">
+                                                ${n}
+                                                ${esMio || miUsuario === 'Papa&Mamá' ? `<span class="btn-accion" onclick="editar('${c.id}','${p.id}',${i},'${n}')">✎</span>` : ''}
+                                            </span>
+                                        `).join('')}
+                                    </div>
+                                    <div style="display:flex; align-items:center;">
+                                        ${esMio || miUsuario === 'Papa&Mamá' ? `<button class="btn-accion btn-del" onclick="borrar('${c.id}','${p.id}')">✕</button>` : ''}
+                                        ${miUsuario === 'Papa&Mamá' && p.estado === 'PENDIENTE' ? `<button class="btn-validar" style="margin-left:5px" onclick="validar('${c.id}','${p.id}')">OK</button>` : ''}
+                                    </div>
                                 </div>
-                            </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
 
                     ${libres > 0 ? `
-                        <div style="background:#fcfaf7; padding:12px; border-radius:12px; border: 1px dashed var(--border)">
-                            <div class="grid-inputs">
-                                ${Array.from({length: libres}).map((_, i) => `
-                                    <input type="text" list="lista-invitados" id="in-${c.id}-${i}" placeholder="Invitado ${i+1}" onchange="saveInput('${c.id}', ${i}, this.value)">
-                                `).join('')}
-                            </div>
-                            <button class="btn-solicitar" onclick="solicitar('${c.id}', ${libres})">Anotar</button>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+                            ${[...Array(libres)].map((_, i) => `
+                                <input type="text" list="invitados-previos" placeholder="Nombre..." onchange="guardarInput('${c.id}', ${i}, this.value)" id="in-${c.id}-${i}">
+                            `).join('')}
                         </div>
-                    ` : ''}
+                        <button class="btn-enviar" onclick="enviar('${c.id}', ${libres})">Solicitar</button>
+                    ` : '<p style="text-align:center; font-size:0.8rem; color:var(--danger)">No quedan huecos oficiales</p>'}
                 </div>`;
         });
 
         document.getElementById('lista-corridas').innerHTML = html;
-        
-        // Actualizar datalist de predictivo
-        document.getElementById('lista-invitados').innerHTML = Array.from(nombresConocidos).map(n => `<option value="${n}">`).join('');
+        document.getElementById('invitados-previos').innerHTML = [...nombresUnicos].map(n => `<option value="${n}">`).join('');
     }
 
-    function saveInput(cId, idx, val) {
-        if (!inputsTemp[cId]) inputsTemp[cId] = {};
-        inputsTemp[cId][idx] = val;
+    function guardarInput(cId, idx, val) {
+        if(!misInputs[cId]) misInputs[cId] = {};
+        misInputs[cId][idx] = val;
     }
 
-    async function solicitar(cId, max) {
+    async function enviar(cId, max) {
         const nombres = [];
         for(let i=0; i<max; i++) {
             const v = document.getElementById(`in-${cId}-${i}`).value.trim();
@@ -165,28 +157,27 @@
         if(!nombres.length) return;
 
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const nuevas = [...(data.peticiones || []), { id: Date.now().toString(), usuario: usuarioActual, nombres: nombres, estado: 'PENDIENTE' }];
+        const nuevas = [...(data.peticiones || []), { id: Date.now().toString(), usuario: miUsuario, nombres: nombres, estado: 'PENDIENTE' }];
         await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
         render();
     }
 
-    async function borrarPeticion(cId, resId) {
-        if(!confirm("¿Borrar esta petición?")) return;
+    async function borrar(cId, pId) {
+        if(!confirm("¿Deseas eliminar esta petición?")) return;
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const nuevas = data.peticiones.filter(p => p.id !== resId);
+        const nuevas = data.peticiones.filter(p => p.id !== pId);
         await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
         render();
     }
 
-    async function editarNombre(cId, resId, nombreIdx, nombreActual) {
-        const nuevoNombre = prompt("Editar nombre:", nombreActual);
-        if (nuevoNombre === null || nuevoNombre.trim() === "") return;
-
+    async function editar(cId, pId, index, viejo) {
+        const nuevo = prompt("Nuevo nombre para el invitado:", viejo);
+        if(!nuevo || nuevo.trim() === "") return;
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
         const nuevas = data.peticiones.map(p => {
-            if(p.id === resId) {
+            if(p.id === pId) {
                 let nNames = [...p.nombres];
-                nNames[nombreIdx] = nuevoNombre.trim();
+                nNames[index] = nuevo.trim();
                 return {...p, nombres: nNames};
             }
             return p;
@@ -197,8 +188,8 @@
 
     async function validar(cId, pId) {
         const { data } = await supabaseClient.from('gestor_toros').select('peticiones').eq('id', cId).single();
-        const actualizadas = data.peticiones.map(p => p.id === pId ? {...p, estado: 'OK'} : p);
-        await supabaseClient.from('gestor_toros').update({ peticiones: actualizadas }).eq('id', cId);
+        const nuevas = data.peticiones.map(p => p.id === pId ? {...p, estado: 'OK'} : p);
+        await supabaseClient.from('gestor_toros').update({ peticiones: nuevas }).eq('id', cId);
         render();
     }
 </script>
